@@ -233,6 +233,7 @@ void app_main(void)
     init_board();
     media_sys_buildup();
     init_console();
+    //test_capture_to_player();
     network_init(WIFI_SSID, WIFI_PASSWORD, network_event_handler);
     while (1) {
         media_lib_thread_sleep(2000);

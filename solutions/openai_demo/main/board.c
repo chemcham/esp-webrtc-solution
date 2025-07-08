@@ -14,10 +14,10 @@ void init_board(void)
     set_codec_board_type(TEST_BOARD_NAME);
     // Notes when use playback and record at same time, must set reuse_dev = false
     codec_init_cfg_t cfg = {
-#if CONFIG_IDF_TARGET_ESP32S3
-        .in_mode = CODEC_I2S_MODE_TDM,
-        .in_use_tdm = true,
-#endif
+//#if CONFIG_IDF_TARGET_ESP32S3
+        .in_mode = CODEC_I2S_MODE_PDM,
+        .out_mode = CODEC_I2S_MODE_STD,
+//#endif
         .reuse_dev = false
     };
     init_codec(&cfg);

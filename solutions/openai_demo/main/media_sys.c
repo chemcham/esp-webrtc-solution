@@ -52,15 +52,11 @@ static int build_capture_system(void)
     capture_sys.aud_enc = esp_capture_new_audio_encoder();
     RET_ON_NULL(capture_sys.aud_enc, -1);
     // For S3 when use ES7210 it use TDM mode second channel is reference data
-    esp_capture_audio_aec_src_cfg_t codec_cfg = {
+    esp_capture_audio_codec_src_cfg_t codec_cfg = {
         .record_handle = get_record_handle(),
-#if CONFIG_IDF_TARGET_ESP32S3
-        .channel = 4,
-        .channel_mask = 1 | 2,
-#endif
     };
-    // capture_sys.aud_src = esp_capture_new_audio_codec_src(&codec_cfg);
-    capture_sys.aud_src = esp_capture_new_audio_aec_src(&codec_cfg);
+    capture_sys.aud_src = esp_capture_new_audio_codec_src(&codec_cfg);
+    //capture_sys.aud_src = esp_capture_new_audio_aec_src(&codec_cfg);
     RET_ON_NULL(capture_sys.aud_src, -1);
     esp_capture_simple_path_cfg_t simple_cfg = {
         .aenc = capture_sys.aud_enc,
@@ -147,7 +143,7 @@ int test_capture_to_player(void)
     av_render_audio_info_t render_aud_info = {
         .codec = AV_RENDER_AUDIO_CODEC_OPUS,
         .sample_rate = 16000,
-        .channel = 1,
+        .channel = 2,
     };
     av_render_add_audio_stream(player_sys.player, &render_aud_info);
 
@@ -159,11 +155,31 @@ int test_capture_to_player(void)
             .stream_type = ESP_CAPTURE_STREAM_TYPE_AUDIO,
         };
         while (esp_capture_acquire_path_frame(capture_path, &frame, true) == ESP_CAPTURE_ERR_OK) {
+            ESP_LOGI("REC2PLAY", "Frame size: %d", frame.size);
+            
+            // モノラルPCMのサンプル数
+            size_t samples = frame.size / sizeof(int16_t);
+
+            // ステレオ用に2倍のバッファを作る
+            int16_t stereo_buf[samples * 2];
+            int16_t *mono = (int16_t *)frame.data;
+
+            for (size_t i = 0; i < samples; i++) {
+                stereo_buf[i * 2] = mono[i];       // L
+                stereo_buf[i * 2 + 1] = mono[i];   // R
+            }
+
             av_render_audio_data_t audio_data = {
-                .data = frame.data,
-                .size = frame.size,
+                .data = (uint8_t *)(stereo_buf),
+                .size = sizeof(int16_t) * samples * 2,
                 .pts = frame.pts,
             };
+
+            // av_render_audio_data_t audio_data = {
+            //     .data = frame.data,
+            //     .size = frame.size,
+            //     .pts = frame.pts,
+            // };
             av_render_add_audio_data(player_sys.player, &audio_data);
             esp_capture_release_path_frame(capture_path, &frame);
         }

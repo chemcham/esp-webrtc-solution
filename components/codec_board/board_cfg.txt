@@ -94,3 +94,9 @@ Board: ESP_SPOT
 i2c: {sda: 25, scl: 26, i2c_addr: 0x18}
 i2s: {bclk: 7, ws: 8, dout: 9, din: 10}
 in_out: {codec: ES8311, pa: 23, pa_gain:6}
+
+Board: ESP32S3_SENSE
+i2s: {bclk: 42, ws: -1, dout: -1, din: 41}
+i2s: {bclk: 3, ws: 2, dout: 1, din: -1}
+out: { "codec": "DUMMY", "i2s_port": 1, pa: 15, i2c_port: -1},
+in: { "codec": "DUMMY", "i2s_port": 0, "pdm": true, i2c_port: -1}

@@ -23,6 +23,8 @@
 #include "driver/sdmmc_defs.h"
 
 #define TAG "CODEC_INIT"
+#define SOC_I2S_SUPPORTS_PDM_TX
+#define SOC_I2S_SUPPORTS_PDM_RX
 
 typedef struct {
     bool                         inited;
@@ -207,7 +209,7 @@ static int _i2s_init(uint8_t port, esp_codec_dev_type_t dev_type, codec_init_cfg
         else if (init_cfg->out_mode == CODEC_I2S_MODE_PDM) {
             i2s_pdm_tx_config_t pdm_cfg = {
                 .clk_cfg = I2S_PDM_TX_CLK_DEFAULT_CONFIG(16000),
-                .slot_cfg = I2S_PDM_TX_SLOT_DEFAULT_CONFIG(16, I2S_SLOT_MODE_STEREO),
+                .slot_cfg = I2S_PDM_TX_SLOT_DEFAULT_CONFIG(16, I2S_SLOT_MODE_MONO),
                 .gpio_cfg = {
                     .dout = i2s_cfg.dout,
                     .clk = i2s_cfg.bclk,
@@ -236,7 +238,7 @@ static int _i2s_init(uint8_t port, esp_codec_dev_type_t dev_type, codec_init_cfg
         else if (init_cfg->in_mode == CODEC_I2S_MODE_PDM) {
             i2s_pdm_rx_config_t pdm_cfg = {
                 .clk_cfg = I2S_PDM_RX_CLK_DEFAULT_CONFIG(16000),
-                .slot_cfg = I2S_PDM_RX_SLOT_DEFAULT_CONFIG(16, I2S_SLOT_MODE_STEREO),
+                .slot_cfg = I2S_PDM_RX_SLOT_DEFAULT_CONFIG(16, I2S_SLOT_MODE_MONO),
                 .gpio_cfg = {
                     .din = i2s_cfg.din,
                     .clk = i2s_cfg.bclk,

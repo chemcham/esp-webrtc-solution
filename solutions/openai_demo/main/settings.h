@@ -19,7 +19,7 @@ extern "C" {
 #if CONFIG_IDF_TARGET_ESP32P4
 #define TEST_BOARD_NAME "ESP32_P4_DEV_V14"
 #else
-#define TEST_BOARD_NAME "S3_Korvo_V2"
+#define TEST_BOARD_NAME "ESP32S3_SENSE"
 #endif
 
 /**
@@ -35,17 +35,17 @@ extern "C" {
 /**
  * @brief  Set WiFi SSID
  */
-#define WIFI_SSID "XXXX"
+#define WIFI_SSID "IODATA-5420ad-2G"
 
 /**
  * @brief  Set WiFi password
  */
-#define WIFI_PASSWORD "XXXX"
+#define WIFI_PASSWORD "97wCk67452576"
 
 /**
  * @brief  Set default playback volume
  */
-#define DEFAULT_PLAYBACK_VOL (85)
+#define DEFAULT_PLAYBACK_VOL (90)
 
 #ifdef __cplusplus
 }
